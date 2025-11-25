@@ -50,7 +50,7 @@ async function fetchMeetings() {
     meetings = data.meetings;
 
     if (meetings.length === 0) {
-      statusEl.textContent = "会議データが登録されていません。";
+      statusEl.innerHTML = `<span class="inline-flex h-2 w-2 rounded-full bg-yellow-400"></span> 会議データが登録されていません。`;
       return;
     }
 
@@ -64,7 +64,10 @@ async function fetchMeetings() {
     statusEl.textContent = ""; // 正常ならステータス消す
   } catch (err) {
     console.error(err);
-    statusEl.textContent = "データ取得に失敗しました：" + err.message;
+    statusEl.innerHTML =
+      `<span class="inline-flex h-2 w-2 rounded-full bg-red-400"></span> ` +
+      "データ取得に失敗しました：" +
+      err.message;
   }
 }
 
@@ -79,10 +82,17 @@ function renderYearTabs(years) {
 
     const isActive = year === currentYear;
     btn.className =
-      "px-3 py-1.5 rounded-full text-sm border transition " +
+      "px-3.5 py-1.5 rounded-full text-[11px] md:text-xs border transition-all " +
+      "backdrop-blur inline-flex items-center gap-1 shadow-sm " +
       (isActive
-        ? "bg-slate-900 text-white border-slate-900 shadow-sm"
-        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100");
+        ? "bg-emerald-400 text-slate-900 border-emerald-300 ring-2 ring-emerald-300/50 font-semibold"
+        : "bg-slate-900/60 text-slate-200 border-slate-600 hover:bg-slate-800 hover:border-slate-400");
+
+    if (isActive) {
+      const dot = document.createElement("span");
+      dot.className = "h-1.5 w-1.5 rounded-full bg-slate-900";
+      btn.prepend(dot);
+    }
 
     btn.addEventListener("click", () => {
       currentYear = year;
@@ -102,7 +112,7 @@ function renderMeetingCards() {
 
   if (filtered.length === 0) {
     const p = document.createElement("p");
-    p.className = "text-sm text-slate-500";
+    p.className = "text-sm text-slate-300";
     p.textContent = "この年度の会議データはありません。";
     meetingsEl.appendChild(p);
     return;
@@ -111,17 +121,19 @@ function renderMeetingCards() {
   filtered.forEach((m) => {
     const card = document.createElement("article");
     card.className =
-      "bg-white rounded-2xl shadow-sm border border-slate-100 px-4 py-3 md:px-5 md:py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2";
+      "bg-slate-900/80 rounded-2xl border border-white/10 " +
+      "px-4 py-3 md:px-5 md:py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 " +
+      "shadow-lg hover:shadow-xl hover:border-emerald-400/50 hover:-translate-y-0.5 transition-all duration-200";
 
     const left = document.createElement("div");
     left.className = "space-y-1";
 
     const titleEl = document.createElement("h2");
-    titleEl.className = "text-base md:text-lg font-semibold text-slate-900";
+    titleEl.className = "text-sm md:text-base font-semibold text-slate-50";
     titleEl.textContent = m.title || "(タイトル未設定)";
 
     const subEl = document.createElement("p");
-    subEl.className = "text-xs text-slate-500";
+    subEl.className = "text-[11px] md:text-xs text-slate-300";
     subEl.textContent = `${m.date || ""} ／ ${m.type || ""} ／ 対象：${
       m.target || ""
     }`;
@@ -131,16 +143,16 @@ function renderMeetingCards() {
 
     if (m.location) {
       const locEl = document.createElement("p");
-      locEl.className = "text-xs text-slate-500";
+      locEl.className = "text-[11px] md:text-xs text-slate-400";
       locEl.textContent = `場所：${m.location}`;
       left.appendChild(locEl);
     }
 
     const right = document.createElement("div");
-    right.className = "flex items-center gap-3 text-xs";
+    right.className = "flex items-center gap-3 text-[11px] md:text-xs";
 
     const countEl = document.createElement("span");
-    countEl.className = "hidden md:inline text-slate-500";
+    countEl.className = "hidden md:inline text-slate-300/90";
     const pdfCount = Array.isArray(m.pdfs) ? m.pdfs.length : 0;
     const videoCount = Array.isArray(m.videos) ? m.videos.length : 0;
     countEl.textContent = `PDF: ${pdfCount}件 ／ 動画: ${videoCount}件`;
@@ -149,7 +161,11 @@ function renderMeetingCards() {
     btn.type = "button";
     btn.textContent = "資料を見る";
     btn.className =
-      "inline-flex items-center justify-center px-3 py-1.5 rounded-full text-xs md:text-sm font-medium bg-slate-900 text-white hover:bg-slate-800 shadow-sm";
+      "inline-flex items-center justify-center px-3.5 py-1.5 rounded-full " +
+      "text-[11px] md:text-xs font-medium " +
+      "bg-emerald-400 text-slate-900 hover:bg-emerald-300 " +
+      "shadow-md shadow-emerald-500/40 hover:shadow-lg hover:shadow-emerald-400/50 " +
+      "transition-all border border-emerald-300";
     btn.addEventListener("click", () => openModal(m));
 
     right.appendChild(countEl);
@@ -182,7 +198,7 @@ function openModal(meeting) {
   const pdfs = Array.isArray(meeting.pdfs) ? meeting.pdfs : [];
   if (pdfs.length === 0) {
     const p = document.createElement("p");
-    p.className = "text-xs text-slate-500";
+    p.className = "text-[11px] md:text-xs text-slate-400";
     p.textContent = "登録されているPDF資料はありません。";
     modalPdfsEl.appendChild(p);
   } else {
@@ -192,7 +208,10 @@ function openModal(meeting) {
       a.target = "_blank";
       a.rel = "noreferrer";
       a.className =
-        "w-full inline-flex items-center gap-2 px-3 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50";
+        "w-full inline-flex items-center gap-2 px-3 py-2 rounded-xl " +
+        "border border-slate-700 bg-slate-900/70 hover:bg-slate-800 " +
+        "text-xs md:text-sm text-slate-100 hover:border-emerald-400/70 " +
+        "transition-all";
       a.innerHTML = `📄 <span>${pdf.title || "(タイトル未設定)"}</span>`;
       modalPdfsEl.appendChild(a);
     });
@@ -203,7 +222,7 @@ function openModal(meeting) {
   const videos = Array.isArray(meeting.videos) ? meeting.videos : [];
   if (videos.length === 0) {
     const p = document.createElement("p");
-    p.className = "text-xs text-slate-500";
+    p.className = "text-[11px] md:text-xs text-slate-400";
     p.textContent = "登録されている動画はありません。";
     modalVideosEl.appendChild(p);
   } else {
@@ -212,12 +231,12 @@ function openModal(meeting) {
       wrap.className = "space-y-1";
 
       const title = document.createElement("p");
-      title.className = "font-medium";
+      title.className = "text-xs md:text-sm font-medium text-slate-100";
       title.textContent = video.title || "(タイトル未設定)";
 
       const frameWrap = document.createElement("div");
       frameWrap.className =
-        "aspect-video w-full rounded-lg overflow-hidden border border-slate-200";
+        "aspect-video w-full rounded-xl overflow-hidden border border-slate-700 bg-black/50";
 
       const iframe = document.createElement("iframe");
       iframe.src = video.url || "";
