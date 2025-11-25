@@ -2,3 +2,22 @@
 body.modal-open {
   overflow: hidden;
 }
+
+/* スクロールバーを少し細く＆控えめに（対応ブラウザのみ） */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.9) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.9);
+  border-radius: 999px;
+}
