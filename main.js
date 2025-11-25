@@ -1,6 +1,7 @@
 // ==== ここを自分のGAS WebアプリURLに変更してください ====
 // 例: const API_URL = "https://script.google.com/macros/s/xxxxxxxxxxxx/exec";
 const API_URL = "https://script.google.com/macros/s/AKfycbzYVA72sPxctK9kCZl-bkMHYxNzdMWx-_WTNEjRXGNAwh5LGRsgk1W5AaUFcBc2DPcs/exec";
+
 let meetings = [];
 let notices = [];
 let submissions = [];
@@ -424,4 +425,4 @@ function closeModal() {
   modalEl.classList.add("hidden");
   modalEl.classList.remove("flex");
   document.body.classList.remove("modal-open");
-}   
+                      }
