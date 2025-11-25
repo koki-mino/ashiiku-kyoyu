@@ -21,21 +21,20 @@ const modalCloseBtn = document.getElementById("modal-close");
 const noticeListEl = document.getElementById("notice-list");
 const submissionListEl = document.getElementById("submission-list");
 
-// ---- 日付表示用フォーマット（2025-05-01 → 2025年5月1日(木)）----
-function formatNoticeDate(dateStr) {
-  if (!dateStr) return "";
-  const parts = dateStr.split("-");
-  if (parts.length !== 3) return dateStr;
-
-  const y = Number(parts[0]);
-  const m = Number(parts[1]);
-  const d = Number(parts[2]);
-  if (!y || !m || !d) return dateStr;
-
-  const dt = new Date(y, m - 1, d); // JSの月は0始まり
+// ---- 日付表示用フォーマット（どんな形式でもなるべく 2025年5月1日(木) に）----
+function formatNoticeDate(raw) {
+  if (!raw) return "";
+  // GAS から "2025-05-01", "2025/05/01", "2025-05-01T00:00:00Z" などいろいろ来ても Date に投げる
+  const dt = new Date(raw);
+  if (isNaN(dt.getTime())) {
+    // どうしても解釈できなければ、そのまま出す
+    return raw;
+  }
+  const y = dt.getFullYear();
+  const m = dt.getMonth() + 1;
+  const d = dt.getDate();
   const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
   const w = weekdays[dt.getDay()];
-
   return `${y}年${m}月${d}日(${w})`;
 }
 
@@ -197,7 +196,7 @@ function renderSubmissions() {
     const targetBadge = document.createElement("span");
     targetBadge.className =
       "inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 " +
-      "text-[10px] font-medium border border-emerald-200";
+      "text-[10px] font-medium border-emerald-200 border";
     targetBadge.textContent = s.target ? `対象：${s.target}` : "対象：全体";
 
     titleRow.appendChild(title);
@@ -452,4 +451,4 @@ function closeModal() {
   modalEl.classList.add("hidden");
   modalEl.classList.remove("flex");
   document.body.classList.remove("modal-open");
-  }
+      }
