@@ -21,6 +21,24 @@ const modalCloseBtn = document.getElementById("modal-close");
 const noticeListEl = document.getElementById("notice-list");
 const submissionListEl = document.getElementById("submission-list");
 
+// ---- 日付表示用フォーマット（2025-05-01 → 2025年5月1日(木)）----
+function formatNoticeDate(dateStr) {
+  if (!dateStr) return "";
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return dateStr;
+
+  const y = Number(parts[0]);
+  const m = Number(parts[1]);
+  const d = Number(parts[2]);
+  if (!y || !m || !d) return dateStr;
+
+  const dt = new Date(y, m - 1, d); // JSの月は0始まり
+  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+  const w = weekdays[dt.getDay()];
+
+  return `${y}年${m}月${d}日(${w})`;
+}
+
 // ---- 初期化 ----
 document.addEventListener("DOMContentLoaded", () => {
   fetchAllData();
@@ -88,7 +106,7 @@ async function fetchAllData() {
   }
 }
 
-// ---- お知らせ掲示板の描画 ----
+// ---- お知らせ掲示板の描画（スマホ見やすい版） ----
 function renderNotices() {
   if (!noticeListEl) return;
   noticeListEl.innerHTML = "";
@@ -104,41 +122,44 @@ function renderNotices() {
   notices.forEach((n) => {
     const item = document.createElement("article");
     item.className =
-      "flex gap-3 p-3 rounded-xl border border-sky-100 bg-sky-50/60 hover:bg-sky-50 " +
-      "transition-all shadow-sm hover:shadow-md";
+      "p-3 rounded-xl border border-sky-100 bg-sky-50/60 hover:bg-sky-50 " +
+      "transition-all shadow-sm hover:shadow-md space-y-1.5";
 
-    const badgeCol = document.createElement("div");
-    badgeCol.className = "flex flex-col items-center gap-2 min-w-[56px]";
+    // 上段：日付＋カテゴリ（横並び）
+    const metaRow = document.createElement("div");
+    metaRow.className =
+      "flex items-center flex-wrap gap-2 text-[11px] md:text-xs";
 
-    const date = document.createElement("p");
-    date.className = "text-xs md:text-sm text-slate-500 leading-tight text-center";
-    date.textContent = n.date || "";
+    const dateSpan = document.createElement("span");
+    dateSpan.className =
+      "inline-flex items-center px-2 py-0.5 rounded-full bg-white text-slate-700 " +
+      "border border-sky-200";
+    dateSpan.textContent = formatNoticeDate(n.date || "");
 
     const cat = document.createElement("span");
     cat.className =
-      "inline-flex items-center justify-center px-2 py-0.5 rounded-full " +
-      "text-[10px] font-semibold bg-white text-sky-700 border border-sky-200";
+      "inline-flex items-center px-2 py-0.5 rounded-full " +
+      "text-[10px] font-semibold bg-sky-100 text-sky-800 border border-sky-200";
     cat.textContent = n.category || "お知らせ";
 
-    badgeCol.appendChild(date);
-    badgeCol.appendChild(cat);
+    metaRow.appendChild(dateSpan);
+    metaRow.appendChild(cat);
 
-    const mainCol = document.createElement("div");
-    mainCol.className = "flex-1 space-y-1";
-
+    // タイトル
     const title = document.createElement("h3");
     title.className = "text-xs md:text-sm font-semibold text-slate-800";
     title.textContent = n.title || "";
 
+    // 本文
     const body = document.createElement("p");
-    body.className = "text-xs md:text-sm text-slate-600 leading-relaxed whitespace-pre-wrap";
+    body.className =
+      "text-xs md:text-sm text-slate-600 leading-relaxed whitespace-pre-wrap";
     body.textContent = n.body || "";
 
-    mainCol.appendChild(title);
-    mainCol.appendChild(body);
+    item.appendChild(metaRow);
+    item.appendChild(title);
+    item.appendChild(body);
 
-    item.appendChild(badgeCol);
-    item.appendChild(mainCol);
     noticeListEl.appendChild(item);
   });
 }
@@ -183,14 +204,16 @@ function renderSubmissions() {
     titleRow.appendChild(targetBadge);
 
     const desc = document.createElement("p");
-    desc.className = "text-xs md:text-sm text-slate-600 leading-relaxed";
+    desc.className =
+      "text-xs md:text-sm text-slate-600 leading-relaxed";
     desc.textContent = s.description || "";
 
     left.appendChild(titleRow);
     left.appendChild(desc);
 
     const right = document.createElement("div");
-    right.className = "flex flex-col items-end gap-2 text-right min-w-[140px]";
+    right.className =
+      "flex flex-col items-end gap-2 text-right min-w-[140px]";
 
     const deadline = document.createElement("p");
     deadline.className = "text-xs md:text-sm text-slate-700";
@@ -272,7 +295,9 @@ function renderMeetingCards() {
     return;
   }
 
-  const filtered = meetings.filter((m) => String(m.year) === String(currentYear));
+  const filtered = meetings.filter(
+    (m) => String(m.year) === String(currentYear)
+  );
 
   if (filtered.length === 0) {
     const p = document.createElement("p");
@@ -313,7 +338,8 @@ function renderMeetingCards() {
     }
 
     const right = document.createElement("div");
-    right.className = "flex items-center gap-3 text-[11px] md:text-xs";
+    right.className =
+      "flex items-center gap-3 text-[11px] md:text-xs";
 
     const countEl = document.createElement("span");
     countEl.className = "hidden md:inline text-slate-500";
@@ -358,7 +384,6 @@ function openModal(meeting) {
 
   // PDFリスト描画
   modalPdfsEl.innerHTML = "";
-  const pdfs = Array.isArray(meeting.pdfs) ? meeting.pdfs.length ? meeting.pdfs : [] : [];
   const pdfList = Array.isArray(meeting.pdfs) ? meeting.pdfs : [];
   if (pdfList.length === 0) {
     const p = document.createElement("p");
@@ -394,7 +419,8 @@ function openModal(meeting) {
       wrap.className = "space-y-1";
 
       const title = document.createElement("p");
-      title.className = "text-xs md:text-sm font-medium text-slate-800";
+      title.className =
+        "text-xs md:text-sm font-medium text-slate-800";
       title.textContent = video.title || "(タイトル未設定)";
 
       const frameWrap = document.createElement("div");
@@ -426,4 +452,4 @@ function closeModal() {
   modalEl.classList.add("hidden");
   modalEl.classList.remove("flex");
   document.body.classList.remove("modal-open");
-        }
+                  }
