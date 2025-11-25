@@ -111,7 +111,7 @@ function renderNotices() {
     badgeCol.className = "flex flex-col items-center gap-2 min-w-[56px]";
 
     const date = document.createElement("p");
-    date.className = "text-[11px] text-slate-500 leading-tight text-center";
+    date.className = "text-xs md:text-sm text-slate-500 leading-tight text-center";
     date.textContent = n.date || "";
 
     const cat = document.createElement("span");
@@ -131,7 +131,7 @@ function renderNotices() {
     title.textContent = n.title || "";
 
     const body = document.createElement("p");
-    body.className = "text-[11px] md:text-xs text-slate-600 leading-relaxed whitespace-pre-wrap";
+    body.className = "text-xs md:text-sm text-slate-600 leading-relaxed whitespace-pre-wrap";
     body.textContent = n.body || "";
 
     mainCol.appendChild(title);
@@ -183,7 +183,7 @@ function renderSubmissions() {
     titleRow.appendChild(targetBadge);
 
     const desc = document.createElement("p");
-    desc.className = "text-[11px] md:text-xs text-slate-600 leading-relaxed";
+    desc.className = "text-xs md:text-sm text-slate-600 leading-relaxed";
     desc.textContent = s.description || "";
 
     left.appendChild(titleRow);
@@ -193,7 +193,7 @@ function renderSubmissions() {
     right.className = "flex flex-col items-end gap-2 text-right min-w-[140px]";
 
     const deadline = document.createElement("p");
-    deadline.className = "text-[11px] md:text-xs text-slate-700";
+    deadline.className = "text-xs md:text-sm text-slate-700";
     deadline.innerHTML = s.deadline
       ? `<span class="font-semibold text-rose-600">${s.deadline}</span> まで`
       : "期限未設定";
@@ -207,7 +207,7 @@ function renderSubmissions() {
       linkBtn.rel = "noreferrer";
       linkBtn.className =
         "inline-flex items-center justify-center px-3 py-1.5 rounded-full " +
-        "text-[11px] md:text-xs font-medium bg-sky-500 text-white hover:bg-sky-400 " +
+        "text-xs md:text-sm font-medium bg-sky-500 text-white hover:bg-sky-400 " +
         "shadow-sm hover:shadow-md transition-all border border-sky-400";
       linkBtn.textContent = "詳細・フォーマットを見る";
       right.appendChild(linkBtn);
@@ -225,7 +225,7 @@ function renderYearTabs(years) {
 
   if (!Array.isArray(years) || years.length === 0) {
     const p = document.createElement("p");
-    p.className = "text-[11px] md:text-xs text-slate-500";
+    p.className = "text-xs md:text-sm text-slate-500";
     p.textContent = "年度情報がありません。";
     yearTabsEl.appendChild(p);
     return;
@@ -297,7 +297,7 @@ function renderMeetingCards() {
     titleEl.textContent = m.title || "(タイトル未設定)";
 
     const subEl = document.createElement("p");
-    subEl.className = "text-[11px] md:text-xs text-slate-600";
+    subEl.className = "text-xs md:text-sm text-slate-600";
     subEl.textContent = `${m.date || ""} ／ ${m.type || ""} ／ 対象：${
       m.target || ""
     }`;
@@ -307,7 +307,7 @@ function renderMeetingCards() {
 
     if (m.location) {
       const locEl = document.createElement("p");
-      locEl.className = "text-[11px] md:text-xs text-slate-500";
+      locEl.className = "text-xs md:text-sm text-slate-500";
       locEl.textContent = `場所：${m.location}`;
       left.appendChild(locEl);
     }
@@ -326,7 +326,7 @@ function renderMeetingCards() {
     btn.textContent = "資料を見る";
     btn.className =
       "inline-flex items-center justify-center px-3.5 py-1.5 rounded-full " +
-      "text-[11px] md:text-xs font-medium " +
+      "text-xs md:text-sm font-medium " +
       "bg-emerald-500 text-white hover:bg-emerald-400 " +
       "shadow-sm hover:shadow-md transition-all border border-emerald-400";
     btn.addEventListener("click", () => openModal(m));
@@ -358,14 +358,15 @@ function openModal(meeting) {
 
   // PDFリスト描画
   modalPdfsEl.innerHTML = "";
-  const pdfs = Array.isArray(meeting.pdfs) ? meeting.pdfs : [];
-  if (pdfs.length === 0) {
+  const pdfs = Array.isArray(meeting.pdfs) ? meeting.pdfs.length ? meeting.pdfs : [] : [];
+  const pdfList = Array.isArray(meeting.pdfs) ? meeting.pdfs : [];
+  if (pdfList.length === 0) {
     const p = document.createElement("p");
-    p.className = "text-[11px] md:text-xs text-slate-500";
+    p.className = "text-xs md:text-sm text-slate-500";
     p.textContent = "登録されているPDF資料はありません。";
     modalPdfsEl.appendChild(p);
   } else {
-    pdfs.forEach((pdf) => {
+    pdfList.forEach((pdf) => {
       const a = document.createElement("a");
       a.href = pdf.url || "#";
       a.target = "_blank";
@@ -384,7 +385,7 @@ function openModal(meeting) {
   const videos = Array.isArray(meeting.videos) ? meeting.videos : [];
   if (videos.length === 0) {
     const p = document.createElement("p");
-    p.className = "text-[11px] md:text-xs text-slate-500";
+    p.className = "text-xs md:text-sm text-slate-500";
     p.textContent = "登録されている動画はありません。";
     modalVideosEl.appendChild(p);
   } else {
@@ -425,4 +426,4 @@ function closeModal() {
   modalEl.classList.add("hidden");
   modalEl.classList.remove("flex");
   document.body.classList.remove("modal-open");
-                      }
+        }
