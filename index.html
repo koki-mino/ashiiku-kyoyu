@@ -11,55 +11,94 @@
   <!-- カスタムCSS -->
   <link rel="stylesheet" href="./style.css">
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-900 flex justify-center p-4 md:p-8 relative overflow-hidden">
-  <!-- 背景グラデーションの飾り -->
+<body class="min-h-screen bg-gradient-to-br from-sky-50 via-emerald-50/60 to-amber-50 flex justify-center p-4 md:p-8 relative overflow-hidden">
+  <!-- 背景のふわっとした丸 -->
   <div class="pointer-events-none fixed inset-0 -z-10">
-    <div class="bg-gradient-to-br from-indigo-500/20 via-sky-500/10 to-emerald-500/20 blur-3xl w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] rounded-full absolute -top-40 -left-10 opacity-70"></div>
-    <div class="bg-gradient-to-tr from-amber-400/20 via-rose-400/10 to-violet-500/20 blur-3xl w-[70vw] h-[70vw] md:w-[40vw] md:h-[40vw] rounded-full absolute -bottom-32 -right-5 opacity-70"></div>
+    <div class="bg-sky-200/50 blur-3xl w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] rounded-full absolute -top-24 -left-10"></div>
+    <div class="bg-pink-200/50 blur-3xl w-[50vw] h-[50vw] md:w-[35vw] md:h-[35vw] rounded-full absolute -bottom-24 -right-5"></div>
   </div>
 
   <div class="w-full max-w-5xl space-y-6 relative">
     <!-- ヘッダー -->
     <header class="space-y-4">
-      <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
         <div class="space-y-1">
-          <p class="inline-flex items-center gap-2 text-[11px] md:text-xs px-2.5 py-1 rounded-full bg-slate-900/60 text-slate-100 shadow-sm border border-white/10 backdrop-blur">
-            <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-400/90 text-[10px] font-bold text-slate-900">i</span>
+          <p class="inline-flex items-center gap-2 text-[11px] md:text-xs px-2.5 py-1 rounded-full bg-white/70 text-sky-700 shadow-sm border border-sky-100">
+            <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">i</span>
             足利市育成会｜資料共有ポータル
           </p>
-          <h1 class="text-2xl md:text-3xl font-bold text-slate-50 tracking-tight">
+          <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
             育成会オンライン資料室
+            <span class="text-lg md:text-xl">📚</span>
           </h1>
-          <p class="text-slate-200/80 text-xs md:text-sm max-w-xl leading-relaxed">
-            市内各地区の育成会長さん向けに、<span class="font-semibold">会議ごとのPDF・動画</span>をひとつにまとめた閲覧専用ページです。
-            スマホからでもサッと確認できます。
+          <p class="text-slate-600 text-xs md:text-sm max-w-xl leading-relaxed">
+            各地区育成会長さん向けの <span class="font-semibold text-sky-700">「会議資料置き場」</span> です。
+            PDFも動画も、このページからまとめて確認できます。
           </p>
         </div>
-        <div class="hidden md:flex flex-col items-end gap-1 text-right text-xs text-slate-200/80">
-          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur shadow-sm">
-            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>最新の会議情報を配信中</span>
+        <div class="hidden md:flex flex-col items-end gap-1 text-right text-xs text-slate-600">
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 border border-emerald-100 shadow-sm">
+            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>最新の資料を公開中</span>
           </span>
-          <span class="opacity-70">
+          <span class="opacity-80">
             担当：青少年育成担当（事務局）
           </span>
         </div>
       </div>
     </header>
 
-    <!-- コンテンツカード -->
-    <main class="bg-slate-900/70 border border-white/10 shadow-xl rounded-2xl md:rounded-3xl backdrop-blur-lg px-4 py-4 md:px-6 md:py-6 space-y-4">
+    <!-- メインカード -->
+    <main class="bg-white/90 border border-sky-100 shadow-xl rounded-2xl md:rounded-3xl px-4 py-4 md:px-6 md:py-6 space-y-5">
+      <!-- 事務局からのお知らせ -->
+      <section class="space-y-2" aria-label="事務局からのお知らせ">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <h2 class="text-sm md:text-base font-semibold text-slate-800 flex items-center gap-2">
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-700 text-base">
+              📌
+            </span>
+            事務局からのお知らせ
+          </h2>
+          <p class="text-[11px] md:text-xs text-slate-500">
+            締切や持ち物など、大事なお知らせをこちらにまとめます。
+          </p>
+        </div>
+        <div id="notice-list" class="space-y-2"></div>
+      </section>
+
+      <!-- 区切り線 -->
+      <div class="border-t border-slate-100 pt-3"></div>
+
+      <!-- 提出物一覧 -->
+      <section class="space-y-2" aria-label="提出物一覧">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <h2 class="text-sm md:text-base font-semibold text-slate-800 flex items-center gap-2">
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-base">
+              📝
+            </span>
+            提出物一覧
+          </h2>
+          <p class="text-[11px] md:text-xs text-slate-500">
+            「いつまでに何を出すか」を一覧で確認できます。
+          </p>
+        </div>
+        <div id="submission-list" class="space-y-2"></div>
+      </section>
+
+      <!-- 区切り線 -->
+      <div class="border-t border-slate-100 pt-3"></div>
+
       <!-- ステータス表示（読み込み中／エラーなど） -->
-      <p id="status" class="text-xs md:text-sm text-slate-200/80 flex items-center gap-2">
-        <span class="inline-flex h-2 w-2 rounded-full bg-slate-200/70 animate-pulse"></span>
+      <p id="status" class="text-xs md:text-sm text-slate-500 flex items-center gap-2">
+        <span class="inline-flex h-2 w-2 rounded-full bg-slate-400 animate-pulse"></span>
         読み込み中です…
       </p>
 
       <!-- 年度タブ -->
       <section class="space-y-2">
         <div class="flex items-center justify-between gap-2 flex-wrap">
-          <h2 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
-            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[11px] border border-white/10">
+          <h2 class="text-sm font-semibold text-slate-800 flex items-center gap-2">
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-100 text-sky-700 text-[11px] border border-sky-200">
               年
             </span>
             年度を選択
@@ -69,13 +108,13 @@
       </section>
 
       <!-- 区切り線 -->
-      <div class="border-t border-slate-700/60 pt-4"></div>
+      <div class="border-t border-slate-100 pt-3"></div>
 
       <!-- 会議カード一覧 -->
       <section class="space-y-3" aria-label="会議一覧">
-        <div class="flex items-center justify-between gap-2 text-[11px] md:text-xs text-slate-300/80">
+        <div class="flex items-center justify-between gap-2 text-[11px] md:text-xs text-slate-500">
           <span class="flex items-center gap-1">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
             最新の会議から順に表示しています。
           </span>
           <span class="hidden md:inline">
@@ -88,26 +127,26 @@
   </div>
 
   <!-- モーダル（会議詳細） -->
-  <div id="modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
-    <div class="bg-slate-950/90 border border-white/15 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-4 md:p-6 backdrop-blur-xl">
+  <div id="modal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-4 md:p-6 border border-sky-100">
       <div class="flex justify-between items-start gap-3 mb-4">
         <div class="space-y-2">
-          <p class="inline-flex items-center gap-2 text-[11px] md:text-xs px-2.5 py-1 rounded-full bg-slate-900/80 text-slate-200 border border-white/10">
+          <p class="inline-flex items-center gap-2 text-[11px] md:text-xs px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
             会議の詳細
           </p>
-          <h2 id="modal-title" class="text-lg md:text-xl font-semibold text-slate-50 leading-snug"></h2>
-          <p id="modal-sub" class="text-[11px] md:text-xs text-slate-300"></p>
-          <p id="modal-extra" class="text-[11px] md:text-xs text-slate-400"></p>
+          <h2 id="modal-title" class="text-lg md:text-xl font-semibold text-slate-900 leading-snug"></h2>
+          <p id="modal-sub" class="text-[11px] md:text-xs text-slate-600"></p>
+          <p id="modal-extra" class="text-[11px] md:text-xs text-slate-500"></p>
         </div>
-        <button id="modal-close" class="text-slate-300 hover:text-slate-50 text-xs md:text-sm inline-flex items-center gap-1 px-2 py-1 rounded-full border border-slate-700 bg-slate-800/80">
+        <button id="modal-close" class="text-slate-500 hover:text-slate-800 text-xs md:text-sm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-slate-200 bg-slate-50">
           ✕ 閉じる
         </button>
       </div>
 
       <!-- PDFリスト -->
       <section class="mt-2">
-        <h3 class="font-semibold text-sm text-slate-100 mb-2 flex items-center gap-2">
-          <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-400/40 text-[11px] text-emerald-200">
+        <h3 class="font-semibold text-sm text-slate-800 mb-2 flex items-center gap-2">
+          <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-50 border border-emerald-200 text-[13px] text-emerald-700">
             📄
           </span>
           PDF資料
@@ -117,8 +156,8 @@
 
       <!-- 動画リスト -->
       <section class="mt-5">
-        <h3 class="font-semibold text-sm text-slate-100 mb-2 flex items-center gap-2">
-          <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-500/10 border border-sky-400/40 text-[11px] text-sky-200">
+        <h3 class="font-semibold text-sm text-slate-800 mb-2 flex items-center gap-2">
+          <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-orange-50 border border-orange-200 text-[13px] text-orange-700">
             ▶
           </span>
           動画
