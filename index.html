@@ -11,7 +11,7 @@
   <!-- カスタムCSS -->
   <link rel="stylesheet" href="./style.css">
 </head>
-<body class="min-h-screen bg-gradient-to-br from-sky-50 via-emerald-50/60 to-amber-50 flex justify-center p-4 md:p-8 relative overflow-hidden">
+<body class="min-h-screen bg-gradient-to-br from-sky-50 via-emerald-50/60 to-amber-50 flex justify-center p-4 md:p-8 relative overflow-x-hidden">
   <!-- 背景のふわっとした丸 -->
   <div class="pointer-events-none fixed inset-0 -z-10">
     <div class="bg-sky-200/50 blur-3xl w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] rounded-full absolute -top-24 -left-10"></div>
@@ -23,7 +23,7 @@
     <header class="space-y-4">
       <div class="flex items-center justify-between gap-3 flex-wrap">
         <div class="space-y-1">
-          <p class="inline-flex items-center gap-2 text-[11px] md:text-xs px-2.5 py-1 rounded-full bg-white/70 text-sky-700 shadow-sm border border-sky-100">
+          <p class="inline-flex items-center gap-2 text-xs md:text-sm px-2.5 py-1 rounded-full bg-white/70 text-sky-700 shadow-sm border border-sky-100">
             <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">i</span>
             足利市育成会｜資料共有ポータル
           </p>
@@ -59,7 +59,7 @@
             </span>
             事務局からのお知らせ
           </h2>
-          <p class="text-[11px] md:text-xs text-slate-500">
+          <p class="text-xs md:text-sm text-slate-500">
             締切や持ち物など、大事なお知らせをこちらにまとめます。
           </p>
         </div>
@@ -78,7 +78,7 @@
             </span>
             提出物一覧
           </h2>
-          <p class="text-[11px] md:text-xs text-slate-500">
+          <p class="text-xs md:text-sm text-slate-500">
             「いつまでに何を出すか」を一覧で確認できます。
           </p>
         </div>
@@ -112,7 +112,7 @@
 
       <!-- 会議カード一覧 -->
       <section class="space-y-3" aria-label="会議一覧">
-        <div class="flex items-center justify-between gap-2 text-[11px] md:text-xs text-slate-500">
+        <div class="flex items-center justify-between gap-2 text-xs md:text-sm text-slate-500">
           <span class="flex items-center gap-1">
             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
             最新の会議から順に表示しています。
@@ -131,12 +131,12 @@
     <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-4 md:p-6 border border-sky-100">
       <div class="flex justify-between items-start gap-3 mb-4">
         <div class="space-y-2">
-          <p class="inline-flex items-center gap-2 text-[11px] md:text-xs px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+          <p class="inline-flex items-center gap-2 text-xs md:text-sm px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
             会議の詳細
           </p>
           <h2 id="modal-title" class="text-lg md:text-xl font-semibold text-slate-900 leading-snug"></h2>
-          <p id="modal-sub" class="text-[11px] md:text-xs text-slate-600"></p>
-          <p id="modal-extra" class="text-[11px] md:text-xs text-slate-500"></p>
+          <p id="modal-sub" class="text-xs md:text-sm text-slate-600"></p>
+          <p id="modal-extra" class="text-xs md:text-sm text-slate-500"></p>
         </div>
         <button id="modal-close" class="text-slate-500 hover:text-slate-800 text-xs md:text-sm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-slate-200 bg-slate-50">
           ✕ 閉じる
