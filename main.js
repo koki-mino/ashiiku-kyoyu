@@ -6,6 +6,7 @@ let meetings = [];
 let notices = [];
 let submissions = [];
 let currentYear = null;
+let currentPassword = null; // ★ スプレッドシート設定と連動するパスワード
 
 // DOM取得
 const statusEl = document.getElementById("status");
@@ -21,52 +22,118 @@ const modalCloseBtn = document.getElementById("modal-close");
 const noticeListEl = document.getElementById("notice-list");
 const submissionListEl = document.getElementById("submission-list");
 
-// ---- 日付表示用フォーマット（どんな形式でもなるべく 2025年5月1日(木) に）----
-function formatNoticeDate(raw) {
-  if (!raw) return "";
-  // GAS から "2025-05-01", "2025/05/01", "2025-05-01T00:00:00Z" などいろいろ来ても Date に投げる
-  const dt = new Date(raw);
-  if (isNaN(dt.getTime())) {
-    // どうしても解釈できなければ、そのまま出す
-    return raw;
-  }
-  const y = dt.getFullYear();
-  const m = dt.getMonth() + 1;
-  const d = dt.getDate();
-  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-  const w = weekdays[dt.getDay()];
-  return `${y}年${m}月${d}日(${w})`;
-}
+// ログイン関連DOM
+const loginSection = document.getElementById("login-section");
+const appMain = document.getElementById("app-main");
+const loginPasswordInput = document.getElementById("login-password");
+const loginButton = document.getElementById("login-button");
+const loginError = document.getElementById("login-error");
 
 // ---- 初期化 ----
 document.addEventListener("DOMContentLoaded", () => {
-  fetchAllData();
+  // 以前ログインした端末なら、保存済みパスワードを使って自動ログイン
+  const savedPw = localStorage.getItem("ikusei_password");
+  if (savedPw) {
+    currentPassword = savedPw;
+    showApp();
+    fetchAllData();
+  } else {
+    showLogin();
+  }
+
+  // ログインボタン
+  if (loginButton) {
+    loginButton.addEventListener("click", handleLogin);
+  }
+  if (loginPasswordInput) {
+    loginPasswordInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleLogin();
+      }
+    });
+  }
 
   // モーダルの閉じるボタン
-  modalCloseBtn.addEventListener("click", closeModal);
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener("click", closeModal);
+  }
 
   // モーダル背景クリックで閉じる
-  modalEl.addEventListener("click", (e) => {
-    if (e.target === modalEl) {
-      closeModal();
-    }
-  });
+  if (modalEl) {
+    modalEl.addEventListener("click", (e) => {
+      if (e.target === modalEl) {
+        closeModal();
+      }
+    });
+  }
 });
+
+// ---- ログイン関連 ----
+function showLogin() {
+  if (loginSection) loginSection.classList.remove("hidden");
+  if (appMain) appMain.classList.add("hidden");
+}
+
+function showApp() {
+  if (loginSection) loginSection.classList.add("hidden");
+  if (appMain) appMain.classList.remove("hidden");
+}
+
+async function handleLogin() {
+  const v = loginPasswordInput ? loginPasswordInput.value.trim() : "";
+  if (!v) {
+    if (loginError) {
+      loginError.textContent = "パスワードを入力してください。";
+    }
+    return;
+  }
+
+  currentPassword = v;
+  if (loginError) loginError.textContent = "";
+  if (statusEl) statusEl.textContent = "";
+  showApp();
+
+  await fetchAllData();
+}
 
 // ---- APIから全データ取得 ----
 async function fetchAllData() {
   try {
-    statusEl.innerHTML =
-      '<span class="inline-flex h-2 w-2 rounded-full bg-slate-400 animate-pulse"></span> 読み込み中です…';
+    if (statusEl) {
+      statusEl.innerHTML =
+        '<span class="inline-flex h-2 w-2 rounded-full bg-slate-400 animate-pulse"></span> 読み込み中です…';
+    }
 
-    const res = await fetch(API_URL);
+    // パスワード付きでGASを叩く
+    let url = API_URL;
+    if (currentPassword) {
+      const qs = `password=${encodeURIComponent(currentPassword)}`;
+      url += (API_URL.includes("?") ? "&" : "?") + qs;
+    }
+
+    const res = await fetch(url);
     if (!res.ok) {
       throw new Error("APIエラー：" + res.status);
     }
     const data = await res.json();
 
+    if (data.status === "auth_error") {
+      // パスワード不一致
+      if (statusEl) statusEl.textContent = "";
+      if (loginError) loginError.textContent = "パスワードが正しくありません。";
+      localStorage.removeItem("ikusei_password");
+      currentPassword = null;
+      showLogin();
+      return;
+    }
+
     if (data.status !== "ok") {
       throw new Error(data.message || "APIレスポンスがエラーになりました。");
+    }
+
+    // 認証成功 → パスワードを端末に保存
+    if (currentPassword) {
+      localStorage.setItem("ikusei_password", currentPassword);
     }
 
     meetings = Array.isArray(data.meetings) ? data.meetings : [];
@@ -78,8 +145,10 @@ async function fetchAllData() {
     renderSubmissions();
 
     if (meetings.length === 0) {
-      statusEl.innerHTML =
-        '<span class="inline-flex h-2 w-2 rounded-full bg-yellow-400"></span> 会議データが登録されていません。';
+      if (statusEl) {
+        statusEl.innerHTML =
+          '<span class="inline-flex h-2 w-2 rounded-full bg-yellow-400"></span> 会議データが登録されていません。';
+      }
       renderYearTabs([]);
       renderMeetingCards();
       return;
@@ -92,20 +161,22 @@ async function fetchAllData() {
 
     renderYearTabs(years);
     renderMeetingCards();
-    statusEl.textContent = ""; // 正常ならステータス消す
+    if (statusEl) statusEl.textContent = "";
   } catch (err) {
     console.error(err);
-    statusEl.innerHTML =
-      '<span class="inline-flex h-2 w-2 rounded-full bg-red-400"></span> ' +
-      "データ取得に失敗しました：" +
-      err.message;
+    if (statusEl) {
+      statusEl.innerHTML =
+        '<span class="inline-flex h-2 w-2 rounded-full bg-red-400"></span> ' +
+        "データ取得に失敗しました：" +
+        err.message;
+    }
     // お知らせ・提出物だけでも描画
     renderNotices();
     renderSubmissions();
   }
 }
 
-// ---- お知らせ掲示板の描画（スマホ見やすい版） ----
+// ---- お知らせ掲示板の描画 ----
 function renderNotices() {
   if (!noticeListEl) return;
   noticeListEl.innerHTML = "";
@@ -133,7 +204,8 @@ function renderNotices() {
     dateSpan.className =
       "inline-flex items-center px-2 py-0.5 rounded-full bg-white text-slate-700 " +
       "border border-sky-200";
-    dateSpan.textContent = formatNoticeDate(n.date || "");
+    // GAS 側で「2025年5月1日(木)」形式に整形済み
+    dateSpan.textContent = n.date || "";
 
     const cat = document.createElement("span");
     cat.className =
@@ -216,6 +288,7 @@ function renderSubmissions() {
 
     const deadline = document.createElement("p");
     deadline.className = "text-xs md:text-sm text-slate-700";
+    // GAS 側で「2025年5月1日(木)」形式に整形済み
     deadline.innerHTML = s.deadline
       ? `<span class="font-semibold text-rose-600">${s.deadline}</span> まで`
       : "期限未設定";
@@ -243,6 +316,7 @@ function renderSubmissions() {
 
 // ---- 年度タブの描画 ----
 function renderYearTabs(years) {
+  if (!yearTabsEl) return;
   yearTabsEl.innerHTML = "";
 
   if (!Array.isArray(years) || years.length === 0) {
@@ -284,6 +358,7 @@ function renderYearTabs(years) {
 
 // ---- 会議カードの描画 ----
 function renderMeetingCards() {
+  if (!meetingsEl) return;
   meetingsEl.innerHTML = "";
 
   if (!Array.isArray(meetings) || meetings.length === 0) {
@@ -367,6 +442,8 @@ function renderMeetingCards() {
 
 // ---- モーダルを開く ----
 function openModal(meeting) {
+  if (!modalEl) return;
+
   modalTitleEl.textContent = meeting.title || "";
   const subParts = [];
 
@@ -448,7 +525,8 @@ function openModal(meeting) {
 
 // ---- モーダルを閉じる ----
 function closeModal() {
+  if (!modalEl) return;
   modalEl.classList.add("hidden");
   modalEl.classList.remove("flex");
   document.body.classList.remove("modal-open");
-      }
+        }
