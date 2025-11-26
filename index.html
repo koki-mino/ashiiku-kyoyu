@@ -19,111 +19,156 @@
   </div>
 
   <div class="w-full max-w-5xl space-y-6 relative">
-    <!-- ヘッダー -->
-    <header class="space-y-4">
-      <div class="flex items-center justify-between gap-3 flex-wrap">
-        <div class="space-y-1">
-          <p class="inline-flex items-center gap-2 text-xs md:text-sm px-2.5 py-1 rounded-full bg-white/70 text-sky-700 shadow-sm border border-sky-100">
-            <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">i</span>
-            足利市育成会｜資料共有ポータル
-          </p>
-          <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            育成会オンライン資料室
-            <span class="text-lg md:text-xl">📚</span>
-          </h1>
-          <p class="text-slate-600 text-xs md:text-sm max-w-xl leading-relaxed">
-            各地区育成会長さん向けの <span class="font-semibold text-sky-700">「会議資料置き場」</span> です。
-            会議資料をまとめて確認できます（一部配布資料を除きます）
-          </p>
-        </div>
-        <div class="hidden md:flex flex-col items-end gap-1 text-right text-xs text-slate-600">
-          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 border border-emerald-100 shadow-sm">
-            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>最新の資料を公開中</span>
-          </span>
-          <span class="opacity-80">
-            担当：青少年育成担当（事務局）
-          </span>
-        </div>
+    <!-- 🔐 ログイン画面 -->
+    <section id="login-section" class="max-w-sm mx-auto bg-white/95 rounded-2xl shadow-xl border border-sky-100 p-4 md:p-5 mt-6 space-y-4">
+      <div class="space-y-2">
+        <p class="inline-flex items-center gap-2 text-xs px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+          <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">i</span>
+          足利市育成会｜関係者専用ページ
+        </p>
+        <h1 class="text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+          育成会オンライン資料室
+        </h1>
+        <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+          事務局から案内されたパスワードを入力してください。
+          各地区育成会長さんなど、関係者のみご利用いただけます。
+        </p>
       </div>
-    </header>
 
-    <!-- メインカード -->
-    <main class="bg-white/90 border border-sky-100 shadow-xl rounded-2xl md:rounded-3xl px-4 py-4 md:px-6 md:py-6 space-y-5">
-      <!-- 事務局からのお知らせ -->
-      <section class="space-y-2" aria-label="事務局からのお知らせ">
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-          <h2 class="text-sm md:text-base font-semibold text-slate-800 flex items-center gap-2">
-            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-700 text-base">
-              📌
-            </span>
-            事務局からのお知らせ
-          </h2>
-          <p class="text-xs md:text-sm text-slate-500">
-            今後の予定など、お知らせをこちらにまとめます。
-          </p>
-        </div>
-        <div id="notice-list" class="space-y-2"></div>
-      </section>
+      <div class="space-y-2">
+        <label for="login-password" class="text-xs font-medium text-slate-700">
+          パスワード
+        </label>
+        <input
+          id="login-password"
+          type="password"
+          class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm bg-slate-50/60 focus:outline-none focus:ring-2 focus:ring-sky-300 focus:border-sky-400"
+          placeholder="例：ikusei2025"
+        />
+        <p id="login-error" class="text-xs text-rose-600 h-4"></p>
+      </div>
 
-      <!-- 区切り線 -->
-      <div class="border-t border-slate-100 pt-3"></div>
+      <button
+        id="login-button"
+        class="w-full inline-flex items-center justify-center rounded-xl bg-sky-500 text-white text-sm font-medium py-2.5 hover:bg-sky-400 shadow-sm hover:shadow-md transition-all"
+      >
+        入室する
+      </button>
 
-      <!-- 提出物一覧 -->
-      <section class="space-y-2" aria-label="提出物一覧">
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-          <h2 class="text-sm md:text-base font-semibold text-slate-800 flex items-center gap-2">
-            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-base">
-              📝
-            </span>
-            提出物一覧
-          </h2>
-          <p class="text-xs md:text-sm text-slate-500">
-            提出物を一覧で確認できます。
-          </p>
-        </div>
-        <div id="submission-list" class="space-y-2"></div>
-      </section>
-
-      <!-- 区切り線 -->
-      <div class="border-t border-slate-100 pt-3"></div>
-
-      <!-- ステータス表示（読み込み中／エラーなど） -->
-      <p id="status" class="text-xs md:text-sm text-slate-500 flex items-center gap-2">
-        <span class="inline-flex h-2 w-2 rounded-full bg-slate-400 animate-pulse"></span>
-        読み込み中です…
+      <p class="text-[11px] text-slate-500 leading-relaxed">
+        ※パスワードを忘れた場合は、<span class="font-semibold">育成会事務局</span>までお問い合わせください。<br>
+        ※一度ログインすると、同じ端末では次回以降自動的に入室できます。
       </p>
+    </section>
 
-      <!-- 年度タブ -->
-      <section class="space-y-2">
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-          <h2 class="text-sm font-semibold text-slate-800 flex items-center gap-2">
-            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-100 text-sky-700 text-[11px] border border-sky-200">
-              年
+    <!-- 📚 本体画面（ログイン後に表示） -->
+    <div id="app-main" class="hidden">
+      <!-- ヘッダー -->
+      <header class="space-y-4 mb-2">
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <div class="space-y-1">
+            <p class="inline-flex items-center gap-2 text-xs md:text-sm px-2.5 py-1 rounded-full bg-white/70 text-sky-700 shadow-sm border border-sky-100">
+              <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">i</span>
+              足利市育成会｜資料共有ポータル
+            </p>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              育成会オンライン資料室
+              <span class="text-lg md:text-xl">📚</span>
+            </h1>
+            <p class="text-slate-600 text-xs md:text-sm max-w-xl leading-relaxed">
+              各地区育成会長さん向けの <span class="font-semibold text-sky-700">「会議資料置き場」</span> です。
+              PDFも動画も、このページからまとめて確認できます。
+            </p>
+          </div>
+          <div class="hidden md:flex flex-col items-end gap-1 text-right text-xs text-slate-600">
+            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 border border-emerald-100 shadow-sm">
+              <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>最新の資料を公開中</span>
             </span>
-            年度を選択
-          </h2>
+            <span class="opacity-80">
+              担当：青少年育成担当（事務局）
+            </span>
+          </div>
         </div>
-        <div id="year-tabs" class="flex flex-wrap gap-2 mt-1"></div>
-      </section>
+      </header>
 
-      <!-- 区切り線 -->
-      <div class="border-t border-slate-100 pt-3"></div>
+      <!-- メインカード -->
+      <main class="bg-white/90 border border-sky-100 shadow-xl rounded-2xl md:rounded-3xl px-4 py-4 md:px-6 md:py-6 space-y-5">
+        <!-- 事務局からのお知らせ -->
+        <section class="space-y-2" aria-label="事務局からのお知らせ">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <h2 class="text-sm md:text-base font-semibold text-slate-800 flex items-center gap-2">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-700 text-base">
+                📌
+              </span>
+              事務局からのお知らせ
+            </h2>
+            <p class="text-xs md:text-sm text-slate-500">
+              締切や持ち物など、大事なお知らせをこちらにまとめます。
+            </p>
+          </div>
+          <div id="notice-list" class="space-y-2"></div>
+        </section>
 
-      <!-- 会議カード一覧 -->
-      <section class="space-y-3" aria-label="会議一覧">
-        <div class="flex items-center justify-between gap-2 text-xs md:text-sm text-slate-500">
-          <span class="flex items-center gap-1">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-            最新の会議から順に表示しています。
-          </span>
-          <span class="hidden md:inline">
-            各会議の「資料を見る」からPDF・動画にアクセスできます。
-          </span>
-        </div>
-        <div id="meetings" class="mt-1 space-y-3"></div>
-      </section>
-    </main>
+        <!-- 区切り線 -->
+        <div class="border-t border-slate-100 pt-3"></div>
+
+        <!-- 提出物一覧 -->
+        <section class="space-y-2" aria-label="提出物一覧">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <h2 class="text-sm md:text-base font-semibold text-slate-800 flex items-center gap-2">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-base">
+                📝
+              </span>
+              提出物一覧
+            </h2>
+            <p class="text-xs md:text-sm text-slate-500">
+              「いつまでに何を出すか」を一覧で確認できます。
+            </p>
+          </div>
+          <div id="submission-list" class="space-y-2"></div>
+        </section>
+
+        <!-- 区切り線 -->
+        <div class="border-t border-slate-100 pt-3"></div>
+
+        <!-- ステータス表示 -->
+        <p id="status" class="text-xs md:text-sm text-slate-500 flex items-center gap-2">
+          <span class="inline-flex h-2 w-2 rounded-full bg-slate-400 animate-pulse"></span>
+          読み込み中です…
+        </p>
+
+        <!-- 年度タブ -->
+        <section class="space-y-2">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <h2 class="text-sm font-semibold text-slate-800 flex items-center gap-2">
+              <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-100 text-sky-700 text-[11px] border border-sky-200">
+                年
+              </span>
+              年度を選択
+            </h2>
+          </div>
+          <div id="year-tabs" class="flex flex-wrap gap-2 mt-1"></div>
+        </section>
+
+        <!-- 区切り線 -->
+        <div class="border-t border-slate-100 pt-3"></div>
+
+        <!-- 会議カード一覧 -->
+        <section class="space-y-3" aria-label="会議一覧">
+          <div class="flex items-center justify-between gap-2 text-xs md:text-sm text-slate-500">
+            <span class="flex items-center gap-1">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+              最新の会議から順に表示しています。
+            </span>
+            <span class="hidden md:inline">
+              各会議の「資料を見る」からPDF・動画にアクセスできます。
+            </span>
+          </div>
+          <div id="meetings" class="mt-1 space-y-3"></div>
+        </section>
+      </main>
+    </div>
   </div>
 
   <!-- モーダル（会議詳細） -->
@@ -167,7 +212,7 @@
     </div>
   </div>
 
-  <!-- メインスクリプト（キャッシュ対策で v= を付ける） -->
-  <script src="./main.js?v=20251125"></script>
+  <!-- メインスクリプト（キャッシュ対策で ?v= を付ける） -->
+  <script src="./main.js?v=20251126"></script>
 </body>
 </html>
